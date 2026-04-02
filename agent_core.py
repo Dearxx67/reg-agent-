@@ -9,7 +9,7 @@ from rag_core import rag_qa
 # 状态定义
 class AgentState(TypedDict):
     query: str
-    plan: List[str]
+    plan: str
     context: str
     answer: str
 
@@ -22,7 +22,7 @@ llm = ChatDashScope(model="qwen-turbo", temperature=0)
 def plan_node(state: AgentState):
     prompt = AGENT_PLAN_PROMPT.format(query=state["query"])
     response = llm.invoke([HumanMessage(content=prompt)])
-    return {"plan": [response.content]}
+    return {"plan": response.content}
 
 
 # 2. 执行节点
@@ -35,11 +35,11 @@ def execute_node(state: AgentState, db, chain):
 def build_agent(db, chain):
     workflow = StateGraph(AgentState)
 
-    workflow.add_node("plan", plan_node)
+    workflow.add_node("plan_node", plan_node)
     workflow.add_node("execute", lambda s: execute_node(s, db, chain))
 
-    workflow.set_entry_point("plan")
-    workflow.add_edge("plan", "execute")
+    workflow.set_entry_point("plan_node")
+    workflow.add_edge("plan_node", "execute")
     workflow.add_edge("execute", END)
 
     return workflow.compile()

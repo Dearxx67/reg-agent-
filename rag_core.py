@@ -41,7 +41,11 @@ def split_documents(documents):
 
 # 3. 构建向量库
 def build_vector_db(chunks):
-    embedding = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    from langchain_dashscope import DashScopeEmbeddings
+
+    embedding = DashScopeEmbeddings(
+        model="text-embedding-v2",
+    )
     db = Chroma.from_documents(
         documents=chunks,
         embedding=embedding,

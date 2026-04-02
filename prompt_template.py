@@ -1,6 +1,6 @@
 from langchain.prompts import ChatPromptTemplate
 
-# RAG问答Prompt（优化版，抑制幻觉、规范输出）
+# RAG问答Prompt（抑制幻觉、规范输出）
 RAG_PROMPT = ChatPromptTemplate.from_messages([
     ("system", """
 你是专业的企业文档问答助手，严格遵循以下规则：
